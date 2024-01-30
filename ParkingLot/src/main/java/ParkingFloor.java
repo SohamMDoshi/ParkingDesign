@@ -1,3 +1,6 @@
+import Exceptions.CarNotFoundException;
+import Exceptions.ParkingLotFullException;
+
 public class ParkingFloor {
     private int floorId;
     private Slot[] slots;
@@ -8,12 +11,12 @@ public class ParkingFloor {
         this.slots = slots;
     }
 
-     int park(Car car) {
+     Ticket park(Car car) {
         if (isCarPresent(car.getRegistrationNumber())) throw new IllegalArgumentException("Car is already parked");
         for (int i = 0; i < this.slots.length; i++) {
             if(this.slots[i].getStatus() == SlotStatus.EMPTY) {
                 this.slots[i] = new Slot(SlotStatus.FULL,car);
-                return i;
+                return new Ticket(floorId,i, car.getRegistrationNumber());
             }
         }
         throw new ParkingLotFullException();

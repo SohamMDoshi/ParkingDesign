@@ -1,3 +1,5 @@
+import Exceptions.CarNotFoundException;
+import Exceptions.ParkingLotFullException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -94,8 +96,8 @@ public class ParkingLotTest {
         Slot[] parkingFloorTwoSlots = {
                 new Slot(SlotStatus.FULL), new Slot(SlotStatus.EMPTY), new Slot(SlotStatus.FULL)
         };
-        ParkingFloor parkingFloorOne = new ParkingFloor(1, parkingFloorOneSlots);
-        ParkingFloor parkingFloorTwo = new ParkingFloor(2, parkingFloorTwoSlots);
+        ParkingFloor parkingFloorOne = new ParkingFloor(0, parkingFloorOneSlots);
+        ParkingFloor parkingFloorTwo = new ParkingFloor(1, parkingFloorTwoSlots);
         parkingLot.addParkingFloor(0, parkingFloorOne);
         parkingLot.addParkingFloor(1, parkingFloorTwo);
 

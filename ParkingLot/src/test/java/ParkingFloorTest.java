@@ -1,3 +1,5 @@
+import Exceptions.CarNotFoundException;
+import Exceptions.ParkingLotFullException;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,8 +30,9 @@ public class ParkingFloorTest {
         };
         ParkingFloor parkingFloor = new ParkingFloor(1,slot);
         Car car = new Car("MH12AR3434","black");
-        int slotNumber = parkingFloor.park(car);
-        assertEquals(0,slotNumber);
+        Ticket ticket = parkingFloor.park(car);
+        Ticket expectTicket = new Ticket(1,0,"MH12AR3434");
+        assertEquals(ticket,expectTicket);
     }
 
     @Test
@@ -61,8 +64,8 @@ public class ParkingFloorTest {
         };
         ParkingFloor parkingFloor = new ParkingFloor(1,slot);
         Car parkedCar = new Car("MH12AR3434","black");
-        int slotNumber = parkingFloor.park(parkedCar);
-        Car unParkedCar = parkingFloor.unpark(slotNumber,"MH12AR3434");
+        Ticket ticket = parkingFloor.park(parkedCar);
+        Car unParkedCar = parkingFloor.unpark(ticket.getParkingSlot(),ticket.getRegistrationNumber());
 
         assertEquals(parkedCar,unParkedCar);
     }
@@ -74,9 +77,9 @@ public class ParkingFloorTest {
         };
         ParkingFloor parkingFloor = new ParkingFloor(1,slots);
         Car car = new Car("MH12AR3434","black");
-        int slotNumber = parkingFloor.park(car);
+        Ticket ticket = parkingFloor.park(car);
         assertThrows(CarNotFoundException.class, () -> {
-            parkingFloor.unpark(slotNumber,"KR00ZM4334");
+            parkingFloor.unpark(ticket.getParkingSlot(),"KR00ZM4334");
         });
     }
 
@@ -88,10 +91,15 @@ public class ParkingFloorTest {
         ParkingFloor parkingFloor = new ParkingFloor(1,slots);
         Car car1 = new Car("JK07AA1111","Red");
         Car car2 = new Car("WB01KK7777", "White");
-        int car1SlotNumber = parkingFloor.park(car1);
-        int car2SlotNumber = parkingFloor.park(car2);
-        assertEquals(0,car1SlotNumber);
-        assertEquals(2,car2SlotNumber);
+
+        Ticket ticketOfCar1 = parkingFloor.park(car1);
+        Ticket expectedTicketOfCar1 = new Ticket(1,0,"JK07AA1111");
+        assertEquals(expectedTicketOfCar1,ticketOfCar1);
+
+        Ticket ticketOfCar2 = parkingFloor.park(car2);
+        Ticket expectedTicketOfCar2 = new Ticket(1,2,"WB01KK7777");
+        assertEquals(expectedTicketOfCar2, ticketOfCar2);
+
     }
 
     @Test
@@ -102,10 +110,28 @@ public class ParkingFloorTest {
         ParkingFloor parkingFloor = new ParkingFloor(1,slots);
         Car car1 = new Car("JK07AA1111","Red");
         Car car2 = new Car("WB01KK7777", "White");
-        int car1SlotNumber = parkingFloor.park(car1);
-        assertEquals(1,car1SlotNumber);
+        Ticket ticket = parkingFloor.park(car1);
+        Ticket expectedTicket = new Ticket(1,1,"JK07AA1111");
+        assertEquals(expectedTicket,ticket);
         assertThrows(ParkingLotFullException.class, () -> {
             parkingFloor.park(car2);
         });
     }
+
+    @Test
+    public void testParkingCarAndThenUnparkTheSameAndParkAnotherNewCar () {
+        Slot[] slots = {
+                new Slot(SlotStatus.EMPTY), new Slot(SlotStatus.FULL),new Slot(SlotStatus.EMPTY)
+        };
+        ParkingFloor parkingFloor = new ParkingFloor(1,slots);
+        Car car1 = new Car("JK07AA1111","Red");
+        Car car2 = new Car("WB01KK7777", "White");
+        Ticket ticket = parkingFloor.park(car1);
+        Car unparkCar1 = parkingFloor.unpark(ticket.getParkingSlot(),ticket.getRegistrationNumber());
+        assertEquals(car1,unparkCar1);
+        Ticket ticketOfCar2 = parkingFloor.park(car2);
+        Ticket expectedTicketOfCar2 = new Ticket(1,0,"WB01KK7777");
+        assertEquals(expectedTicketOfCar2, ticketOfCar2);
+    }
+
 }
