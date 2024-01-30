@@ -134,4 +134,51 @@ public class ParkingFloorTest {
         assertEquals(expectedTicketOfCar2, ticketOfCar2);
     }
 
+    @Test
+    public void testParkingCarsOnLastEmptySlot_ExpectParkingFloorFull () {
+        Slot[] slots = {
+                new Slot(SlotStatus.EMPTY), new Slot(SlotStatus.FULL),new Slot(SlotStatus.EMPTY)
+        };
+        ParkingFloor parkingFloor = new ParkingFloor(1,slots);
+        Car car1 = new Car("JK07AA1111","Red");
+        Car car2 = new Car("WB01KK7777", "White");
+
+        Ticket ticketOfCar1 = parkingFloor.park(car1);
+        Ticket expectedTicketOfCar1 = new Ticket(1,0,"JK07AA1111");
+        assertEquals(expectedTicketOfCar1,ticketOfCar1);
+
+        Ticket ticketOfCar2 = parkingFloor.park(car2);
+        Ticket expectedTicketOfCar2 = new Ticket(1,2,"WB01KK7777");
+        assertEquals(expectedTicketOfCar2, ticketOfCar2);
+
+        assertTrue(parkingFloor.isParkingFloorFull());
+
+    }
+
+    @Test
+    public void testUnParkingCarsWhenParkingFloorIfFull_ExpectParkingFloorAvailable () {
+        Slot[] slots = {
+                new Slot(SlotStatus.EMPTY), new Slot(SlotStatus.FULL),new Slot(SlotStatus.EMPTY)
+        };
+        ParkingFloor parkingFloor = new ParkingFloor(1,slots);
+        Car car1 = new Car("JK07AA1111","Red");
+        Car car2 = new Car("WB01KK7777", "White");
+
+        Ticket ticketOfCar1 = parkingFloor.park(car1);
+        Ticket expectedTicketOfCar1 = new Ticket(1,0,"JK07AA1111");
+        assertEquals(expectedTicketOfCar1,ticketOfCar1);
+
+        Ticket ticketOfCar2 = parkingFloor.park(car2);
+        Ticket expectedTicketOfCar2 = new Ticket(1,2,"WB01KK7777");
+        assertEquals(expectedTicketOfCar2, ticketOfCar2);
+
+        assertTrue(parkingFloor.isParkingFloorFull());
+
+        Car unparkedCar1 = parkingFloor.unpark(ticketOfCar1.getParkingSlot(),ticketOfCar1.getRegistrationNumber());
+        assertEquals(car1,unparkedCar1);
+
+        assertFalse(parkingFloor.isParkingFloorFull());
+
+    }
+
 }

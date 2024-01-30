@@ -23,7 +23,7 @@ public class ParkingFloor {
     }
 
     boolean isParkingFloorFull() {
-        return availableSlots == slots.length;
+        return (slots.length - availableSlots) == slots.length;
     }
 
     Ticket park(Car car) {
