@@ -1,3 +1,5 @@
+import Exceptions.CarNotFoundException;
+import Exceptions.ParkingLotFullException;
 import Exceptions.ParkingLotNotFoundException;
 
 import java.util.HashSet;
@@ -22,13 +24,36 @@ public class Attendant {
     }
 
     public Ticket park (ParkingLot parkingLot, Car car) {
-        if (isParkingLotAssigned(parkingLot)) return parkingLot.park(car);
-        else throw new  ParkingLotNotFoundException();
+        try {
+            if (isParkingLotAssigned(parkingLot)) return parkingLot.park(car);
+        }catch (ParkingLotFullException e) {
+            parkingLotsFullNotification();
+            System.out.println(e.getMessage());
+        }
+        throw new  ParkingLotNotFoundException();
     }
 
     public Car unpark (ParkingLot parkingLot,Ticket ticket) {
-        if (isParkingLotAssigned(parkingLot)) return parkingLot.unPark(ticket);
-        else throw new  ParkingLotNotFoundException();
+        try {
+            if (isParkingLotAssigned(parkingLot)) {
+                if(parkingLot.isParkingLotFull()) {
+                    parkingLotsAvailableNotification();
+                }
+                return parkingLot.unPark(ticket);
+            }
+        }catch (CarNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        throw new  ParkingLotNotFoundException();
     }
+
+    public String parkingLotsFullNotification () {
+        return "All Parking Lots are currently full";
+    }
+
+    public String parkingLotsAvailableNotification() {
+        return "Parking lots are available";
+    }
+
 
 }

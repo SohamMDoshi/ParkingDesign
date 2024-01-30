@@ -5,17 +5,33 @@ public class ParkingFloor {
     private int floorId;
     private Slot[] slots;
 
+    private int availableSlots;
+
     public ParkingFloor(int floorId, Slot[] slots) {
         this.floorId = floorId;
         if(slots.length <= 0) throw new IllegalArgumentException("Number of slots cannot be less or equal to 0");
         this.slots = slots;
+        this.availableSlots = numberOfAvailableSlots(slots);
     }
 
-     Ticket park(Car car) {
+    int numberOfAvailableSlots(Slot[] slots) {
+        int count = 0;
+        for (Slot slot : slots) {
+            if (slot.getStatus() == SlotStatus.EMPTY) count++;
+        }
+        return count;
+    }
+
+    boolean isParkingFloorFull() {
+        return availableSlots == slots.length;
+    }
+
+    Ticket park(Car car) {
         if (isCarPresent(car.getRegistrationNumber())) throw new IllegalArgumentException("Car is already parked");
         for (int i = 0; i < this.slots.length; i++) {
             if(this.slots[i].getStatus() == SlotStatus.EMPTY) {
                 this.slots[i] = new Slot(SlotStatus.FULL,car);
+                availableSlots--;
                 return new Ticket(floorId,i, car.getRegistrationNumber());
             }
         }
@@ -35,6 +51,7 @@ public class ParkingFloor {
         if(slots[slotNumber].getCar().getRegistrationNumber().equals(registrationNumber)) {
             Car car = slots[slotNumber].getCar();
             slots[slotNumber] = new Slot(SlotStatus.EMPTY);
+            availableSlots++;
             return car;
         }
         throw new CarNotFoundException();

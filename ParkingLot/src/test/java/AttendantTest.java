@@ -92,4 +92,8 @@ public class AttendantTest {
     }
 
 
+    @Test
+    public void testAssigningTwoParkingLotsToAttedant () {
+
+    }
 }

@@ -14,6 +14,13 @@ public class ParkingLot {
         parkingFloors[floor]=parkingFloor;
     }
 
+    boolean isParkingLotFull () {
+        for (int i = 0; i < parkingFloors.length; i++) {
+            if(!parkingFloors[i].isParkingFloorFull()) return false;
+        }
+        return true;
+    }
+
 
     ParkingFloor[] getParkingFloors() {
         return parkingFloors;
@@ -22,7 +29,6 @@ public class ParkingLot {
     Ticket park(Car car) {
         for (int i = 0; i < parkingFloors.length; i++) {
             try {
-
                 return parkingFloors[i].park(car);
             }catch (ParkingLotFullException e) {
                 System.out.println("Parking floor is full. Trying the next floor");
