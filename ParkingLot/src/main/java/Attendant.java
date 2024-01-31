@@ -5,7 +5,7 @@ import Exceptions.ParkingLotNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Attendant {
+public class Attendant implements ParkingLotSubscriber{
 
     private String name;
     private Set<ParkingArea> assignedParkingArea;
@@ -35,12 +35,17 @@ public class Attendant {
     }
 
     public Ticket park (ParkingLot parkingLot, Car car) {
+        Ticket ticket;
         try {
-            if (isParkingLotAssigned(parkingLot) && !isParkingLotFull(parkingLot)) return strategy.park(car,parkingLot);
+            if (isParkingLotAssigned(parkingLot) && !isParkingLotFull(parkingLot)) {
+                ticket = strategy.park(car,parkingLot);
+                if (parkingLot.isFull()) NotificationBus.instance().publish(this,ParkingLotEvent.FULL);
+                return ticket;
+            }
         }catch (ParkingLotFullException e) {
-            parkingLotsFullNotification();
             System.out.println(e.getMessage());
         }
+        if (parkingLot.isFull()) NotificationBus.instance().publish(this,ParkingLotEvent.FULL);
         throw new  ParkingLotNotFoundException();
     }
 
@@ -58,13 +63,11 @@ public class Attendant {
         throw new  ParkingLotNotFoundException();
     }
 
-    public String parkingLotsFullNotification () {
-        return "All parking lots are currently full";
+    public void parkingLotsFullNotification () {
+        System.out.println("All parking lots are currently full");
     }
 
     public String parkingLotsAvailableNotification() {
         return "Parking lots are available";
     }
-
-
 }

@@ -96,8 +96,7 @@ public class AttendantTest {
     @Test
     public void testParkingTwoCarWithTwoDifferentAttendantWhenParkingLotIsFull() {
         Attendant attendantOne = new Attendant("ABD");
-        Attendant attendantTwo = new Attendant("XYZ");
-        Attendant attendant = mock(Attendant.class);
+        ParkingLotSubscriber attendantTwo = new Attendant("XYZ");
 
         Slot[] slots1 = {
                 new Slot(SlotStatus.FULL), new Slot(SlotStatus.EMPTY),new Slot(SlotStatus.FULL)
@@ -121,13 +120,11 @@ public class AttendantTest {
         Ticket expectedTicket = new Ticket(1,1,"MH12VV9999");
         assertEquals(expectedTicket,ticket);
 
-        verify(attendant, times(0)).parkingLotsFullNotification();
-
         Car car2 = new Car("JK12RR1111","White");
         Ticket ticketOfCar2 = attendantTwo.park(parkingLot,car2);
         Ticket expectedTicketOfCar2 = new Ticket(2,2,"JK12RR1111");
         assertEquals(expectedTicketOfCar2,ticketOfCar2);
 
-        verify(attendant).parkingLotsFullNotification();
+        verify(attendantTwo).parkingLotsFullNotification();
     }
 }

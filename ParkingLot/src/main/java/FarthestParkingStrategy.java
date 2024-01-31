@@ -1,4 +1,4 @@
-public class FarthestParkingStrategy implements ParkingStrategy{
+public class FarthestParkingStrategy implements ParkingStrategy {
     @Override
     public Ticket park(Car car, ParkingLot parkingLot) {
         ParkingFloor floor = parkingLot.getFarthestAvailableFloor();

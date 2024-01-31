@@ -1,4 +1,4 @@
-public class NearestParkingStrategy implements ParkingStrategy{
+public class NearestParkingStrategy implements ParkingStrategy {
     @Override
     public Ticket park(Car car, ParkingLot parkingLot) {
         ParkingFloor floor = parkingLot.getNearestAvailableFloor();

@@ -1,4 +1,4 @@
-public class DistributedParkingStrategy implements ParkingStrategy{
+public class DistributedParkingStrategy implements ParkingStrategy {
 
     @Override
     public Ticket park(Car car, ParkingLot parkingLot) {

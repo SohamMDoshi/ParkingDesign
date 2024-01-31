@@ -1,3 +1,3 @@
 public interface ParkingStrategy {
-    Ticket park (Car car,ParkingLot parkingLot);
+    Ticket park (Car car, ParkingLot parkingLot);
 }
