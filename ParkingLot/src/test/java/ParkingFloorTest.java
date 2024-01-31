@@ -2,7 +2,6 @@ import Exceptions.CarNotFoundException;
 import Exceptions.ParkingLotFullException;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.InvocationTargetException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +23,7 @@ public class ParkingFloorTest {
     }
 
     @Test
-    public void testCarParkingOnEmptySlot() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public void testCarParkingOnEmptySlot() {
         Slot[] slot = {
                 new Slot(SlotStatus.EMPTY), new Slot(SlotStatus.FULL),new Slot(SlotStatus.EMPTY)
         };
@@ -58,7 +57,7 @@ public class ParkingFloorTest {
     }
 
     @Test
-    public void testCarUnparkingCarFromSlotWithValidCar_ExpectedTrue() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    public void testCarUnparkingCarFromSlotWithValidCar_ExpectedTrue() {
         Slot[] slot = {
                 new Slot(SlotStatus.EMPTY), new Slot(SlotStatus.FULL),new Slot(SlotStatus.EMPTY)
         };
@@ -71,7 +70,7 @@ public class ParkingFloorTest {
     }
 
     @Test
-    public void testCarUnparkingCarFromSlotWithInvalidCarNumber_ExpectedException() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    public void testCarUnparkingCarFromSlotWithInvalidCarNumber_ExpectedException() {
         Slot[] slots = {
                 new Slot(SlotStatus.EMPTY), new Slot(SlotStatus.FULL),new Slot(SlotStatus.EMPTY)
         };
@@ -146,6 +145,7 @@ public class ParkingFloorTest {
         Ticket ticketOfCar1 = parkingFloor.park(car1);
         Ticket expectedTicketOfCar1 = new Ticket(1,0,"JK07AA1111");
         assertEquals(expectedTicketOfCar1,ticketOfCar1);
+
 
         Ticket ticketOfCar2 = parkingFloor.park(car2);
         Ticket expectedTicketOfCar2 = new Ticket(1,2,"WB01KK7777");

@@ -8,24 +8,35 @@ import java.util.Set;
 public class Attendant {
 
     private String name;
-    private Set<ParkingLot> assignedParkingLots;
+    private Set<ParkingArea> assignedParkingArea;
+
+    private ParkingStrategy strategy;
 
     public Attendant(String name) {
         this.name = name;
-        this.assignedParkingLots = new HashSet<>();
+        this.assignedParkingArea = new HashSet<>();
+        this.strategy = new NearestParkingStrategy();
+    }
+
+    void setStrategy(ParkingStrategy parkingStrategy) {
+        this.strategy = parkingStrategy;
     }
 
     void assignParkingLot(ParkingLot parkingLot) {
-        assignedParkingLots.add(parkingLot);
+        assignedParkingArea.add(parkingLot);
     }
 
     boolean isParkingLotAssigned(ParkingLot parkingLot) {
-        return assignedParkingLots.contains(parkingLot);
+        return assignedParkingArea.contains(parkingLot);
+    }
+
+    boolean isParkingLotFull(ParkingLot parkingLot) {
+        return parkingLot.isFull();
     }
 
     public Ticket park (ParkingLot parkingLot, Car car) {
         try {
-            if (isParkingLotAssigned(parkingLot)) return parkingLot.park(car);
+            if (isParkingLotAssigned(parkingLot) && !isParkingLotFull(parkingLot)) return strategy.park(car,parkingLot);
         }catch (ParkingLotFullException e) {
             parkingLotsFullNotification();
             System.out.println(e.getMessage());
@@ -36,7 +47,7 @@ public class Attendant {
     public Car unpark (ParkingLot parkingLot,Ticket ticket) {
         try {
             if (isParkingLotAssigned(parkingLot)) {
-                if(parkingLot.isParkingLotFull()) {
+                if(parkingLot.isFull()) {
                     parkingLotsAvailableNotification();
                 }
                 return parkingLot.unPark(ticket);
@@ -48,7 +59,7 @@ public class Attendant {
     }
 
     public String parkingLotsFullNotification () {
-        return "All Parking Lots are currently full";
+        return "All parking lots are currently full";
     }
 
     public String parkingLotsAvailableNotification() {

@@ -63,8 +63,9 @@ public class ParkingLotTest {
 
         Car car = new Car("TL23AH7007", "Black");
         Ticket ticket = parkingLot.park(car);
-        Ticket expectedTicket = new Ticket(1,1,"TL23AH7007");
+        Ticket expectedTicket = new Ticket(2,1,"TL23AH7007");
         assertEquals(expectedTicket,ticket);
+
     }
 
     @Test
@@ -82,7 +83,7 @@ public class ParkingLotTest {
         parkingLot.addParkingFloor(1, parkingFloorTwo);
 
         Car car = new Car("TL23AH7007", "Black");
-        assertThrows(ParkingLotFullException.class, ()-> {
+        assertThrows(ParkingLotFullException.class, () -> {
             parkingLot.park(car);
         });
     }
@@ -128,4 +129,54 @@ public class ParkingLotTest {
             parkingLot.unPark(ticket);
         });
     }
+
+    @Test
+    public void testMakingParkingLotFull_ExpectParkingLotToBeFull() {
+        ParkingLot parkingLot = new ParkingLot(2);
+        Slot[] parkingFloorOneSlots = {
+                new Slot(SlotStatus.FULL), new Slot(SlotStatus.FULL),new Slot(SlotStatus.FULL)
+        };
+        Slot[] parkingFloorTwoSlots = {
+                new Slot(SlotStatus.FULL), new Slot(SlotStatus.EMPTY),new Slot(SlotStatus.FULL)
+        };
+        ParkingFloor parkingFloorOne = new ParkingFloor(0,parkingFloorOneSlots);
+        ParkingFloor parkingFloorTwo = new ParkingFloor(1,parkingFloorTwoSlots);
+        parkingLot.addParkingFloor(0,parkingFloorOne);
+        parkingLot.addParkingFloor(1,parkingFloorTwo);
+
+        Car car = new Car("TL23AH7007", "Black");
+        Ticket ticket = parkingLot.park(car);
+        Ticket expectedTicket = new Ticket(1,1,"TL23AH7007");
+        assertEquals(expectedTicket,ticket);
+
+        assertTrue(parkingLot.isFull());
+    }
+
+    @Test
+    public void testMakingParkingLotFullThenUnParkingCar_ExpectParkingLotToBeAvailable() {
+        ParkingLot parkingLot = new ParkingLot(2);
+        Slot[] parkingFloorOneSlots = {
+                new Slot(SlotStatus.FULL), new Slot(SlotStatus.FULL),new Slot(SlotStatus.FULL)
+        };
+        Slot[] parkingFloorTwoSlots = {
+                new Slot(SlotStatus.FULL), new Slot(SlotStatus.EMPTY),new Slot(SlotStatus.FULL)
+        };
+        ParkingFloor parkingFloorOne = new ParkingFloor(0,parkingFloorOneSlots);
+        ParkingFloor parkingFloorTwo = new ParkingFloor(1,parkingFloorTwoSlots);
+        parkingLot.addParkingFloor(0,parkingFloorOne);
+        parkingLot.addParkingFloor(1,parkingFloorTwo);
+
+        Car car = new Car("TL23AH7007", "Black");
+        Ticket ticket = parkingLot.park(car);
+        Ticket expectedTicket = new Ticket(1,1,"TL23AH7007");
+        assertEquals(expectedTicket,ticket);
+
+        assertTrue(parkingLot.isFull());
+
+        Car unParkedCar = parkingLot.unPark(ticket);
+        assertEquals(car,unParkedCar);
+
+        assertFalse(parkingLot.isFull());
+    }
+
 }

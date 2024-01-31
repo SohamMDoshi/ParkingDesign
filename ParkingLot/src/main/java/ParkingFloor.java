@@ -1,7 +1,7 @@
 import Exceptions.CarNotFoundException;
 import Exceptions.ParkingLotFullException;
 
-public class ParkingFloor {
+public class ParkingFloor implements ParkingArea{
     private int floorId;
     private Slot[] slots;
 
@@ -22,21 +22,49 @@ public class ParkingFloor {
         return count;
     }
 
+    int nearestSlotAvailable() {
+        for (int i = 0; i < slots.length; i++) {
+            if (slots[i].getStatus() == SlotStatus.EMPTY) return i;
+        }
+        throw new ParkingLotFullException();
+    }
+
+    int farthestSlotAvailable() {
+        for (int i = slots.length-1; i >= 0; i++) {
+            if (slots[i].getStatus() == SlotStatus.EMPTY) return i;
+        }
+        throw new ParkingLotFullException();
+    }
+
+    int getCountOfAvailableSlots() {
+        return availableSlots;
+    }
+
     boolean isParkingFloorFull() {
         return (slots.length - availableSlots) == slots.length;
     }
 
-    Ticket park(Car car) {
+    @Override
+    public Ticket park(Car car) {
         if (isCarPresent(car.getRegistrationNumber())) throw new IllegalArgumentException("Car is already parked");
-        for (int i = 0; i < this.slots.length; i++) {
-            if(this.slots[i].getStatus() == SlotStatus.EMPTY) {
-                this.slots[i] = new Slot(SlotStatus.FULL,car);
-                availableSlots--;
-                return new Ticket(floorId,i, car.getRegistrationNumber());
-            }
+        try {
+            int slotNumber = nearestSlotAvailable();
+            this.slots[slotNumber] = new Slot(SlotStatus.FULL,car);
+            availableSlots--;
+            return new Ticket(floorId,slotNumber, car.getRegistrationNumber());
+        }catch (ParkingLotFullException e) {
+            throw new ParkingLotFullException();
         }
-        throw new ParkingLotFullException();
+
     }
+
+    public Ticket park(Car car, int slotNumber) {
+        if (isCarPresent(car.getRegistrationNumber())) throw new IllegalArgumentException("Car is already parked");
+        this.slots[slotNumber] = new Slot(SlotStatus.FULL,car);
+        availableSlots--;
+        return new Ticket(floorId,slotNumber, car.getRegistrationNumber());
+    }
+
 
     boolean isCarPresent(String registrationNumber){
         for (Slot slot : slots) {
