@@ -38,9 +38,8 @@ public class Attendant implements ParkingLotSubscriber{
         Ticket ticket;
         try {
             if (isParkingLotAssigned(parkingLot) && !isParkingLotFull(parkingLot)) {
-                ticket = strategy.park(car,parkingLot);
-                if (parkingLot.isFull()) NotificationBus.instance().publish(this,ParkingLotEvent.FULL);
-                return ticket;
+                return strategy.park(car,parkingLot);
+                //if (parkingLot.isFull()) NotificationBus.instance().publish(this,ParkingLotEvent.FULL);
             }
         }catch (ParkingLotFullException e) {
             System.out.println(e.getMessage());

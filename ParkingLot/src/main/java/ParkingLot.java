@@ -29,10 +29,14 @@ public class ParkingLot implements ParkingArea{
 
     ParkingFloor getCurrentFloor() {
         int min = parkingFloors[0].getCountOfAvailableSlots();
-        for (int i = 1; i < parkingFloors.length; i++) {
-            if(min < parkingFloors[i].getCountOfAvailableSlots()) min = parkingFloors[i].getCountOfAvailableSlots();
+        int floor = 0;
+        for (int i = 0; i < parkingFloors.length; i++) {
+            if(min < parkingFloors[i].getCountOfAvailableSlots()) {
+                min = parkingFloors[i].getCountOfAvailableSlots();
+                floor = i;
+            }
         }
-        return parkingFloors[min];
+        return parkingFloors[floor];
     }
 
     ParkingFloor getNearestAvailableFloor () {

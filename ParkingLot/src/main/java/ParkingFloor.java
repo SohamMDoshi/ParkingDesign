@@ -17,7 +17,7 @@ public class ParkingFloor implements ParkingArea{
     int numberOfAvailableSlots(Slot[] slots) {
         int count = 0;
         for (Slot slot : slots) {
-            if (slot.getStatus() == SlotStatus.EMPTY) count++;
+            if (slot.getStatus() == SlotStatus.EMPTY) ++count;
         }
         return count;
     }

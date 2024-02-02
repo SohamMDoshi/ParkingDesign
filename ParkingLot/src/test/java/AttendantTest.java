@@ -94,9 +94,71 @@ public class AttendantTest {
 
 
     @Test
+    public void testParkingCarWithFarthestStrategy() {
+        Attendant attendant = new Attendant("ABD");
+
+        Slot[] slots1 = {
+                new Slot(SlotStatus.EMPTY), new Slot(SlotStatus.EMPTY),new Slot(SlotStatus.FULL)
+        };
+        Slot[] slots2 = {
+                new Slot(SlotStatus.FULL), new Slot(SlotStatus.EMPTY),new Slot(SlotStatus.EMPTY)
+        };
+
+        ParkingLot parkingLot = new ParkingLot(2);
+        ParkingFloor parkingFloorOne = new ParkingFloor(0,slots1);
+        ParkingFloor parkingFloorTwo = new ParkingFloor(1,slots2);
+
+        parkingLot.addParkingFloor(0,parkingFloorOne);
+        parkingLot.addParkingFloor(1,parkingFloorTwo);
+
+        attendant.assignParkingLot(parkingLot);
+
+        Car car1 = new Car("MH12VV9999","Black");
+        attendant.setStrategy(new FarthestParkingStrategy());
+        Ticket ticket = attendant.park(parkingLot,car1);
+
+        Ticket expectedTicket = new Ticket(1,2,"MH12VV9999");
+        assertEquals(expectedTicket,ticket);
+    }
+
+
+    @Test
+    public void testParkingCarWithDistributedParkingStrategy() {
+        Attendant attendant = new Attendant("ABD");
+
+        Slot[] slots1 = {
+                new Slot(SlotStatus.FULL), new Slot(SlotStatus.FULL),new Slot(SlotStatus.EMPTY)
+        };
+        Slot[] slots2 = {
+                new Slot(SlotStatus.FULL), new Slot(SlotStatus.EMPTY),new Slot(SlotStatus.EMPTY)
+        };
+        Slot[] slots3 = {
+                new Slot(SlotStatus.EMPTY), new Slot(SlotStatus.EMPTY),new Slot(SlotStatus.EMPTY)
+        };
+
+        ParkingLot parkingLot = new ParkingLot(3);
+        ParkingFloor parkingFloorOne = new ParkingFloor(0,slots1);
+        ParkingFloor parkingFloorTwo = new ParkingFloor(1,slots2);
+        ParkingFloor parkingFloorThree = new ParkingFloor(2,slots3);
+
+        parkingLot.addParkingFloor(0,parkingFloorOne);
+        parkingLot.addParkingFloor(1,parkingFloorTwo);
+        parkingLot.addParkingFloor(2,parkingFloorThree);
+
+        attendant.assignParkingLot(parkingLot);
+
+        Car car1 = new Car("MH12VV9999","Black");
+        attendant.setStrategy(new DistributedParkingStrategy());
+        Ticket ticket = attendant.park(parkingLot,car1);
+
+        Ticket expectedTicket = new Ticket(2,0,"MH12VV9999");
+        assertEquals(expectedTicket,ticket);
+    }
+
+    @Test
     public void testParkingTwoCarWithTwoDifferentAttendantWhenParkingLotIsFull() {
         Attendant attendantOne = new Attendant("ABD");
-        ParkingLotSubscriber attendantTwo = new Attendant("XYZ");
+        Attendant attendantTwo = new Attendant("XYZ");
 
         Slot[] slots1 = {
                 new Slot(SlotStatus.FULL), new Slot(SlotStatus.EMPTY),new Slot(SlotStatus.FULL)
